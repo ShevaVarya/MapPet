@@ -1,35 +1,45 @@
 package com.example.myapplication
 
 import android.os.Bundle
-import android.util.Log
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
-import com.mapbox.geojson.GeoJson
-import com.mapbox.geojson.gson.GeometryGeoJson
+import com.mapbox.geojson.Feature
+import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
+import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.geometry.LatLngBounds
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.maps.MapView
-import org.json.JSONArray
+import com.mapbox.mapboxsdk.maps.MapboxMap
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
+import com.mapbox.mapboxsdk.maps.Style
 import org.json.JSONObject
 import java.io.IOException
 import java.io.InputStream
-
-import com.mapbox.geojson.Feature;
-import com.mapbox.geojson.FeatureCollection;
-import com.mapbox.geojson.Point;
-import com.mapbox.mapboxsdk.maps.MapboxMap
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import android.graphics.BitmapFactory
+import android.util.Log
 
 
-class MainActivity : AppCompatActivity() {
+import com.mapbox.geojson.FeatureCollection
+import com.mapbox.mapboxsdk.style.layers.SymbolLayer
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
+import java.util.ArrayList
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage
+import java.net.URI
+import java.net.URISyntaxException
+
+
+class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private var mapView: MapView? = null
+    private val SOURCE_ID = "SOURCE_ID";
+    private val ICON_ID = "ICON_ID";
+    private val LAYER_ID = "LAYER_ID";
 
     private val locationOne = LatLng(55.932475, 37.870141)
     private val locationTwo = LatLng(55.559958, 37.341934)
-    private var dataPoint = mutableMapOf<Int, ArrayList<Double>>()
+    var dataPoint = mutableMapOf<Int, List<Double>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,18 +50,7 @@ class MainActivity : AppCompatActivity() {
 
         mapView = findViewById(R.id.mapView)
         mapView?.onCreate(savedInstanceState)
-        mapView?.getMapAsync { mapboxMap ->
-
-            mapboxMap.setStyle(Style.OUTDOORS) {
-
-                val latLngBounds = LatLngBounds.Builder()
-                    .include(locationOne)
-                    .include(locationTwo)
-                    .build();
-                mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 10));
-
-            }
-        }
+        mapView?.getMapAsync(this)
 
         try {
             var idPoint: Int
@@ -70,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+
     }
 
     private fun JSONDataFromAssets(filename: String): String {
@@ -86,6 +86,47 @@ class MainActivity : AppCompatActivity() {
             return null.toString()
         }
         return json;
+
+    }
+
+    override fun onMapReady(@NonNull mapboxMap: MapboxMap) {
+        val symbolLayerIconFeatureList: MutableList<Feature> = ArrayList()
+        symbolLayerIconFeatureList.add(
+            Feature.fromGeometry(
+                Point.fromLngLat(37.759903, 55.618775)
+            )
+        )
+        symbolLayerIconFeatureList.add(
+            Feature.fromGeometry(
+                Point.fromLngLat(-54.14164, -33.981818)
+            )
+        )
+        symbolLayerIconFeatureList.add(
+            Feature.fromGeometry(
+                Point.fromLngLat(-56.990533, -30.583266)
+            )
+        )
+
+        mapboxMap.setStyle(
+            Style.Builder().fromUri("mapbox://styles/shevavarya/ckqc1lfvv1uxr17nww8mwmrj6")
+                .withImage(ICON_ID, BitmapFactory.decodeResource(
+                    this.getResources(), R.drawable.mapbox_marker_icon_default
+                ))
+                .withSource(GeoJsonSource(SOURCE_ID,
+                    FeatureCollection.fromFeatures(symbolLayerIconFeatureList)))
+            .withLayer(SymbolLayer(LAYER_ID, SOURCE_ID)
+            .withProperties(
+                iconImage(ICON_ID),
+                iconAllowOverlap(true),
+                iconIgnorePlacement(true)
+            )
+        ),  Style.OnStyleLoaded() {
+                val latLngBounds = LatLngBounds.Builder()
+                    .include(locationOne)
+                    .include(locationTwo)
+                    .build();
+                mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 10));
+        })
     }
 
 
@@ -123,5 +164,4 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         mapView?.onDestroy()
     }
-
 }
