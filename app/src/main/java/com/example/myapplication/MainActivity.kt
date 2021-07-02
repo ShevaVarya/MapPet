@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.content.Intent
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -141,8 +142,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
     private fun handleClickIcon(screenPoint: PointF): Boolean{
         var features: MutableList<Feature> = mapboxMap?.queryRenderedFeatures(screenPoint, LAYER_ID) as MutableList<Feature>
         if (!features.isEmpty()){
-            var featureInfoTextView: TextView = findViewById(R.id.feature_info);
-            featureInfoTextView.setText(features.get(0).toJson());
+            val intent = Intent(this, VideoActivity::class.java)
+            startActivity(intent)
             return true;
         } else {
             return false;

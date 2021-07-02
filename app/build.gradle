@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-android-extensions'
 }
 
 android {
@@ -41,6 +42,7 @@ android {
 
 dependencies {
 
+    implementation 'com.google.android.exoplayer:exoplayer:2.11.8'
     implementation 'com.google.android.exoplayer:exoplayer-core:2.14.1'
     implementation 'com.google.android.exoplayer:exoplayer-hls:2.14.1'
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.14.1'
@@ -51,7 +53,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     implementation 'com.google.code.gson:gson:2.8.1'
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
-    testImplementation 'junit:junit:4.+'
+    testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.6.1'
