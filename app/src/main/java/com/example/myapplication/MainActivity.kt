@@ -1,14 +1,15 @@
 package com.example.myapplication
 
 import android.content.Intent
-import android.widget.TextView;
 import android.widget.Toast;
 
 import android.graphics.BitmapFactory
 import android.graphics.PointF
 import android.os.Bundle
+import android.util.Log
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.JsonObject
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.Point
@@ -21,7 +22,6 @@ import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.style.expressions.Expression.stop
-import com.mapbox.mapboxsdk.style.layers.PropertyFactory.*
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource
 import org.json.JSONObject
@@ -32,7 +32,6 @@ import java.util.*
 import com.mapbox.mapboxsdk.style.expressions.Expression.get
 import com.mapbox.mapboxsdk.style.expressions.Expression.literal
 import com.mapbox.mapboxsdk.style.expressions.Expression.match
-import com.mapbox.mapboxsdk.style.expressions.Expression.stop
 import com.mapbox.mapboxsdk.style.layers.Property
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAnchor
@@ -49,7 +48,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
 
     private val locationOne = LatLng(55.932475, 37.870141)
     private val locationTwo = LatLng(55.559958, 37.341934)
-    var dataPoint = mutableListOf<List<Double>>()
+    private var dataPoint = mutableListOf<List<Double>>()
+    var sampleUrl = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,6 +73,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
                 coordinatesPoint.add(x[0].toString().toDouble())
                 coordinatesPoint.add(x[1].toString().toDouble())
                 dataPoint.add(coordinatesPoint)
+                sampleUrl.add(geoData.getJSONObject("properties").getString("camera_url"))
             }
         } catch (e: IOException) {
             e.printStackTrace()
@@ -141,7 +142,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, MapboxMap.OnMapCli
     }
     private fun handleClickIcon(screenPoint: PointF): Boolean{
         var features: MutableList<Feature> = mapboxMap?.queryRenderedFeatures(screenPoint, LAYER_ID) as MutableList<Feature>
+
+
         if (!features.isEmpty()){
+            var json = JSONObject(features[0].toJson()).getJSONObject("geometry").getJSONArray("coordinates")
+            var coordinatesPoint = ArrayList<Double>()
+           // var coordinateList =
+            coordinatesPoint.add(json[1].toString().toDouble())
+            coordinatesPoint.add(json[0].toString().toDouble())
+
+            Log.d("Less", "ghb" + dataPoint.indexOf(coordinatesPoint))
+            Log.d("Less", "ghb" + (coordinatesPoint))
+
             val intent = Intent(this, VideoActivity::class.java)
             startActivity(intent)
             return true;
