@@ -18,7 +18,7 @@
       "id": 2,
       "type": "Feature",
       "properties": {
-      	"camera_url": "http://212.12.27.183:38090/api/archive/73794391-5def-4bda-b7cb-461a94fd816d/1624487473.mp4"
+      	"camera_url": "https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_640_3MG.mp4"
 	},
       "geometry": {
         "type": "Point",

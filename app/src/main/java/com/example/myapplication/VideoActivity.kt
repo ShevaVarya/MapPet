@@ -12,11 +12,12 @@ import kotlinx.android.synthetic.main.activity_video_of_marker.*
 
 class VideoActivity : AppCompatActivity() {
     private var videoPlayer: SimpleExoPlayer? = null
-    private var sampleUrl = "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4"
+    var sampleUrl: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video_of_marker)
+        sampleUrl = getIntent().getStringExtra("sampleUrl").toString()
         initializePlayer()
     }
 

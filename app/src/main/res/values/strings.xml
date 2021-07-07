@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">My Application</string>
-    <string  name = "tap_on_marker_instruction" > Нажмите на маркер </string >
+    <string name = "tap_on_marker_instruction" > Нажмите на маркер </string >
+    <string name = "tap_on_marker_again" > Попробуйте снова </string>
     <string name="mapbox_access_token">pk.eyJ1Ijoic2hldmF2YXJ5YSIsImEiOiJja3E5NXJuYzkwbXVzMndvYWp3ZmNoZWR2In0.qZ_noFs2Y8V89XFi1w6OBw</string>
 </resources>
